@@ -1,11 +1,15 @@
-version: '3.8'
+version: '3.9'
 
 services:
   web:
     build: .
     ports:
-      - "8000:8000"
+      - "8000:8000"  # Port for FastAPI
+      - "8501:8501"  # Port for Streamlit
     environment:
-      - PYTHONDONTWRITEBYTECODE=1
-      - PYTHONUNBUFFERED=1
-    command: uvicorn FASTAPI:app --host 0.0.0.0 --port 8000
+      - STREAMLIT_SERVER_PORT=8501
+    command: >
+      bash -c "
+      uvicorn FASTAPI:app --host 0.0.0.0 --port 8000 &
+      streamlit run streamlit_app.py --server.port 8501 --server.enableCORS false"
+
