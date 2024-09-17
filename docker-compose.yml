@@ -1,15 +1,17 @@
-version: '3.9'
+version: '3.8'
 
 services:
-  web:
-    build: .
+  iris-app:
+    image: iris-app:latest
+    build:
+      context: .
+      dockerfile: Dockerfile
     ports:
-      - "8000:8000"  # Port for FastAPI
-      - "8501:8501"  # Port for Streamlit
-    environment:
-      - STREAMLIT_SERVER_PORT=8501
+      - "8000:8000"
+      - "8501:8501"
+    volumes:
+      - ./setosa.png:/app/setosa.png
+      - ./versicolor.png:/app/versicolor.png
+      - ./virginica.png:/app/virginica.png
     command: >
-      bash -c "
-      uvicorn FASTAPI:app --host 0.0.0.0 --port 8000 &
-      streamlit run streamlit_app.py --server.port 8501 --server.enableCORS false"
-
+      /bin/bash -c "uvicorn FASTAPI:app --host 0.0.0.0 --port 8000 & streamlit run streamlit_app.py --server.port 8501 --server.address 0.0.0.0"

@@ -1,11 +1,11 @@
 import streamlit as st
 import requests
+from PIL import Image
 
 # Page config
 st.set_page_config(page_title="Iris Flower Prediction", page_icon="🌸", layout="centered")
 
 # Header and image
-st.image("https://upload.wikimedia.org/wikipedia/commons/thumb/4/41/Iris_versicolor_3.jpg/1200px-Iris_versicolor_3.jpg", use_column_width=True)
 st.title("🌼 Iris Flower Prediction 🌼")
 st.markdown("Provide the dimensions of the iris flower to predict its species.")
 
@@ -20,10 +20,18 @@ with st.sidebar:
 # Button styling and prediction
 st.markdown('<style>.stButton button {background-color: #4CAF50; color: white;}</style>', unsafe_allow_html=True)
 
+# FastAPI prediction URL (adjust as needed)
+api_url = "http://localhost:8000/predict/"
+
+# Images for different predictions
+image_paths = {
+    "setosa": "setosa.png",
+    "versicolor": "versicolor.png",
+    "virginica": "virginica.png"
+}
+
 if st.button("Predict 🌿"):
-    # Use the FastAPI URL running locally
-    api_url = "http://localhost:8000/predict/"
-    
+    # Prepare payload with user inputs
     payload = {
         "sepal_length": sepal_length,
         "sepal_width": sepal_width,
@@ -36,7 +44,14 @@ if st.button("Predict 🌿"):
 
     if response.status_code == 200:
         prediction = response.json().get("prediction", "Error in prediction")
-        st.success(f"🌷 The predicted Iris species is: {prediction}")
+        st.success(f"🌷 The predicted Iris species is: {prediction.capitalize()}")
+
+        # Display corresponding image based on prediction
+        if prediction in image_paths:
+            st.image(image_paths[prediction], caption=f"Iris {prediction.capitalize()}", use_column_width=True)
+        else:
+            st.error("Unknown species predicted.")
+
     else:
         st.error("⚠️ Error: Unable to fetch prediction")
 
