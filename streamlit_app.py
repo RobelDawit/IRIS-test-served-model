@@ -5,7 +5,6 @@ import requests
 st.set_page_config(page_title="Iris Flower Prediction", page_icon="🌸", layout="centered")
 
 # Header and image
-st.image("https://upload.wikimedia.org/wikipedia/commons/thumb/4/41/Iris_versicolor_3.jpg/1200px-Iris_versicolor_3.jpg", use_column_width=True)
 st.title("🌼 Iris Flower Prediction 🌼")
 st.markdown("Provide the dimensions of the iris flower to predict its species.")
 
