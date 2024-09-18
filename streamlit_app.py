@@ -4,9 +4,16 @@ import requests
 # Page config
 st.set_page_config(page_title="Iris Flower Prediction", page_icon="🌸", layout="centered")
 
-# Header and image
+# Header and title
 st.title("🌼 Iris Flower Prediction 🌼")
 st.markdown("Provide the dimensions of the iris flower to predict its species.")
+
+# Dictionary for image paths
+image_paths = {
+    "setosa": "setosa.png",
+    "versicolor": "versicolor.png",
+    "virginica": "virginica.png"
+}
 
 # Sidebar inputs for Iris features and predict button
 with st.sidebar:
@@ -33,25 +40,18 @@ with st.sidebar:
 
         if response.status_code == 200:
             prediction = response.json().get("prediction", "Error in prediction")
-            # Display the prediction result in the main area
             st.session_state.prediction = prediction
         else:
             st.session_state.prediction = "⚠️ Error: Unable to fetch prediction"
 
-image_paths = {
-    "setosa": "setosa.png",
-    "versicolor": "versicolor.png",
-    "virginica": "virginica.png"
-}
-
-# Show prediction in the main section after the image
+# Show prediction and display the associated image
 if "prediction" in st.session_state:
-    st.success(f"🌷 The predicted Iris species is: {st.session_state.prediction}")
-
-if prediction in image_paths:
-    st.image(image_paths[prediction], caption=f"Iris {prediction.capitalize()}", use_column_width=True)
-else:
-    st.error("Unknown species predicted.")
+    prediction = st.session_state.prediction
+    if prediction in image_paths:
+        st.success(f"🌷 The predicted Iris species is: {prediction.capitalize()}")
+        st.image(image_paths[prediction], caption=f"Iris {prediction.capitalize()}", use_column_width=True)
+    else:
+        st.error("⚠️ Unknown species predicted or issue with prediction.")
 
 # Footer
 st.markdown("---")
