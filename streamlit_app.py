@@ -5,6 +5,7 @@ import requests
 st.set_page_config(page_title="Iris Flower Prediction", page_icon="🌸", layout="centered")
 
 # Header and image
+st.image("https://upload.wikimedia.org/wikipedia/commons/thumb/4/41/Iris_versicolor_3.jpg/1200px-Iris_versicolor_3.jpg", use_column_width=True)
 st.title("🌼 Iris Flower Prediction 🌼")
 st.markdown("Provide the dimensions of the iris flower to predict its species.")
 
@@ -16,7 +17,7 @@ with st.sidebar:
     petal_length = st.number_input("Petal Length", min_value=0.0, max_value=10.0, value=1.4)
     petal_width = st.number_input("Petal Width", min_value=0.0, max_value=10.0, value=0.2)
 
-    # Move the predict button into the sidebar
+    # Button remains in the sidebar
     if st.button("Predict 🌿"):
         # Use the FastAPI URL running locally
         api_url = "http://localhost:8000/predict/"
@@ -33,9 +34,25 @@ with st.sidebar:
 
         if response.status_code == 200:
             prediction = response.json().get("prediction", "Error in prediction")
-            st.success(f"🌷 The predicted Iris species is: {prediction}")
+            # Display the prediction result in the main area
+            st.session_state.prediction = prediction
         else:
-            st.error("⚠️ Error: Unable to fetch prediction")
+            st.session_state.prediction = "⚠️ Error: Unable to fetch prediction"
+
+image_paths = {
+    "setosa": "setosa.png",
+    "versicolor": "versicolor.png",
+    "virginica": "virginica.png"
+}
+
+# Show prediction in the main section after the image
+if "prediction" in st.session_state:
+    st.success(f"🌷 The predicted Iris species is: {st.session_state.prediction}")
+
+if prediction in image_paths:
+    st.image(image_paths[prediction], caption=f"Iris {prediction.capitalize()}", use_column_width=True)
+else:
+    st.error("Unknown species predicted.")
 
 # Footer
 st.markdown("---")
